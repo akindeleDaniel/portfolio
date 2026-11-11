@@ -278,8 +278,7 @@ a:focus-visible, .button:focus-visible { outline: 2px solid var(--accent); outli
   .reveal { opacity: 1; transform: none; }
 }
 
-/* Gradient: delete from here to "End gradient" to remove it */
-main { overflow-x: clip; }
+/* main { overflow-x: clip; }
 .hero-home { position: relative; isolation: isolate; }
 .hero-home::before {
   content: ''; position: absolute; z-index: -1; pointer-events: none;
@@ -300,9 +299,7 @@ main { overflow-x: clip; }
 .stats strong {
   background: linear-gradient(115deg, var(--accent), #2f80ed);
   -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-/* End gradient */
-
+} */
 /* Wider screens */
 @media (min-width: 40rem) {
   .actions { flex-direction: row; flex-wrap: wrap; }
