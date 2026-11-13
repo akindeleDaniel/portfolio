@@ -42,6 +42,8 @@ export const nav = [
 
 export const header = {
   hireLabel: 'Hire me',
+  openMenuLabel: 'Open menu',
+  closeMenuLabel: 'Close menu',
 }
 
 export const hero = {
@@ -49,7 +51,8 @@ export const hero = {
   title: 'I build online stores and payment systems that real people use.',
   intro:
     'I built and run StoreHatch, a marketplace where anyone can open a shop, take payments through Paystack and Flutterwave, and get paid straight to their bank. I work across the whole stack: React, Node.js, PostgreSQL and the hosting around them.',
-  availability: site.availability,
+  availability: 'Open to remote and freelance work', // short enough for one line on a phone
+  subtitle: 'Websites, online stores and booking systems for small businesses.',
   hireLabel: 'Hire me on WhatsApp',
   cvLabel: 'Download CV',
   caseStudyLabel: 'See StoreHatch',

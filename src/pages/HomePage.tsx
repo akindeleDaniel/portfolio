@@ -16,6 +16,7 @@ export default function HomePage() {
         <div className="hero-text">
           <p className="badge"><span className="dot" aria-hidden="true" />{hero.availability}</p>
           <h1>{hero.title}</h1>
+          <p className="hero-sub">{hero.subtitle}</p>
           <p className="lead">{hero.intro}</p>
           <p className="eyebrow">{hero.eyebrow}</p>
           <div className="actions">
