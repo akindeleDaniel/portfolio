@@ -192,7 +192,8 @@ a:focus-visible, .button:focus-visible { outline: 2px solid var(--accent); outli
 .shot-tall img { max-width: 20rem; margin-inline: auto; }
 .shot figcaption { margin-top: 0.6rem; font-size: 0.9rem; text-align: center; }
 
-.video { width: 100%; border-radius: var(--radius); border: 1px solid var(--border); }
+.video { width: 100%; border-radius: var(--radius); border: 1px solid var(--border); background: #000; box-shadow: var(--shadow); }
+.video + figcaption { margin-top: 0.6rem; font-size: 0.9rem; text-align: center; }
 .diagram { display: grid; gap: 1rem; margin-top: 1rem; }
 .flow, .flow-sides { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.5rem; }
 .flow li, .flow-sides li { display: flex; flex-direction: column; gap: 0.25rem; }
@@ -204,12 +205,24 @@ a:focus-visible, .button:focus-visible { outline: 2px solid var(--accent); outli
 .flow-sides { gap: 1rem; }
 .panel-dashed { border-style: dashed; box-shadow: none; }
 
-.snippet { margin: 1rem 0 1.5rem; }
-.snippet figcaption { display: flex; flex-direction: column; margin-bottom: 0.5rem; }
+.snippets-intro { margin-bottom: 2rem; }
+.snippet {
+  margin: 0 0 1.75rem; overflow: hidden;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.snippet figcaption {
+  display: flex; flex-direction: column; gap: 0.35rem;
+  padding: 1.25rem 1.25rem 1.1rem; border-bottom: 1px solid var(--border);
+}
+.snippet figcaption strong { font-size: 1.05rem; letter-spacing: -0.01em; }
+.snippet figcaption .muted { max-width: 42rem; font-size: 0.95rem; }
+.snippet-number { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
 .snippet pre {
-  margin: 0; padding: 1rem; overflow-x: auto;
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-small);
-  font-size: 0.875rem; line-height: 1.5;
+  margin: 0; padding: 1.25rem; overflow-x: auto;
+  background: var(--surface-2);
+  font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;
+  font-size: 0.85rem; line-height: 1.65; tab-size: 4;
 }
 
 .cta { border-top: 1px solid var(--border); margin-top: 1rem; }

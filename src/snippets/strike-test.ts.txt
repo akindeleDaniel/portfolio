@@ -1,0 +1,27 @@
+test("upheld complaints are strikes: a warning at 2, a block at 4, and an administrator can lift it", async () => {
+    // One strike is not a warning.
+    let now = await standing()
+    assert.deepEqual([now.strikes, now.warned, now.blocked], [1, false, false])
+
+    // A refund the seller agreed to, one older than 90 days, and a rejected one are not strikes.
+    await strike({ outcome: "REFUNDED", sellerAgreedAt: new Date() })
+    await strike({ resolvedAt: new Date(Date.now() - 100 * 24 * 60 * 60 * 1000) })
+    await strike({ outcome: "REJECTED" })
+    assert.equal((await standing()).strikes, 1)
+
+    // The second strike warns the seller, once, even if the check runs twice.
+    await strike({ outcome: "REFUNDED" })
+    await reviewSellerStanding(sellerId)
+    await reviewSellerStanding(sellerId)
+    assert.equal(emailsTo(seller).filter((m) => /warning about complaints/.test(m.subject)).length, 1)
+
+    // The fourth strike blocks the shop: it is hidden and cannot be bought from.
+    await strike(); await strike()
+    await reviewSellerStanding(sellerId)
+    assert.equal((await standing()).blocked, true)
+    assert.equal((await fetch(`${baseUrl}/seller/shop/${slug}`)).status, 404)
+
+    // Lifting the block starts the count from zero.
+    const lifted = await request("POST", `/admin/sellers/${sellerId}/unblock`, {}, adminToken)
+    assert.deepEqual([lifted.body.standing.strikes, lifted.body.standing.blocked], [0, false])
+})

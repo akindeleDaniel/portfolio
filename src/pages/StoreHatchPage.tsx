@@ -22,8 +22,8 @@ export default function StoreHatchPage() {
 
       {s.video && (
         <figure className="section reveal">
-          <video controls preload="metadata" poster={s.video.poster} className="video">
-            <source src={s.video.src} />
+          <video controls playsInline preload="metadata" poster={s.video.poster} className="video">
+            <source src={s.video.src} type="video/mp4" />
           </video>
           <figcaption className="muted">{s.video.caption}</figcaption>
         </figure>
@@ -80,9 +80,11 @@ export default function StoreHatchPage() {
       {s.snippets.length > 0 && (
         <section className="section reveal">
           <h2>{s.snippetsTitle}</h2>
-          {s.snippets.map((snip) => (
+          <p className="muted prose snippets-intro">{s.snippetsIntro}</p>
+          {s.snippets.map((snip, i) => (
             <figure key={snip.title} className="snippet">
               <figcaption>
+                <span className="snippet-number">{`Snippet ${i + 1} of ${s.snippets.length}`}</span>
                 <strong>{snip.title}</strong>
                 <span className="muted">{snip.note}</span>
               </figcaption>

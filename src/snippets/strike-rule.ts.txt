@@ -1,0 +1,31 @@
+// A complaint StoreHatch upholds is a strike. Strikes older than 90 days stop counting.
+export const strikeWindowDays = 90
+export const strikesForWarning = 2
+export const strikesForBlock = 4
+
+// Run after a complaint against a seller is upheld. Warns at the first threshold
+// and blocks at the second, once each; it never lifts a block.
+export async function reviewSellerStanding(sellerId: number): Promise<void> {
+    const profile = await prisma.sellerProfile.findUnique({
+        where: { userId: sellerId }, select: { blockedAt: true, strikeWarnedAt: true }
+    })
+    if (!profile || profile.blockedAt) return
+
+    const strikes = (await loadStrikes(sellerId)).length
+
+    if (strikes >= strikesForBlock) {
+        const blocked = await prisma.sellerProfile.updateMany({
+            where: { userId: sellerId, blockedAt: null },
+            data: { blockedAt: new Date(), blockReason: `Automatic: ${strikes} upheld complaints in ${strikeWindowDays} days` }
+        })
+        if (blocked.count === 1) queueNotification("seller blocked", () => notifySellerBlocked(sellerId))
+        return
+    }
+
+    if (strikes >= strikesForWarning && !profile.strikeWarnedAt) {
+        const warned = await prisma.sellerProfile.updateMany({
+            where: { userId: sellerId, strikeWarnedAt: null }, data: { strikeWarnedAt: new Date() }
+        })
+        if (warned.count === 1) queueNotification("seller warned", () => notifySellerWarned(sellerId, strikes))
+    }
+}

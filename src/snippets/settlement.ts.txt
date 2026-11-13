@@ -1,0 +1,53 @@
+// Completes the checkout paid by a verified payment, exactly once. Webhooks, the status
+// endpoint and reconciliation all call this; repeated or concurrent calls are safe.
+export async function settleCheckoutPayment(attemptId: number): Promise<SettlementResult> {
+    for (let attempt = 1; ; attempt++) {
+        try {
+            const { result } = await settleOnce(attemptId)
+
+            // Only the call that actually settled the checkout sends the receipt.
+            if (result === "settled") {
+                queueNotification("payment settled", () => notifyPaymentSettled(attemptId))
+            }
+            return result
+        } catch (error) {
+            // Paid, but the stock is no longer held: recorded for a person to review.
+            if (error instanceof SettlementNeedsReview) {
+                await openRecoveryCase(attemptId, error.message)
+                return "needs_review"
+            }
+
+            const serializationFailure = error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2034"
+            if (!serializationFailure || attempt >= maximumSerializationRetries) throw error
+        }
+    }
+}
+
+async function settleOnce(attemptId: number) {
+    return prisma.$transaction(async (tx) => {
+        // ...load the checkout, its orders and the stock held for it...
+
+        // Only one caller can move the checkout to COMPLETED; every other caller stops here.
+        const completed = await tx.checkout.updateMany({
+            where: { id: checkout.id, status: { in: ["PENDING", "PAYMENT_PENDING", "EXPIRED"] } },
+            data: { status: "COMPLETED" }
+        })
+        if (completed.count !== 1) return { result: "already_settled" as const }
+
+        for (const reservation of heldReservations) {
+            const decremented = await tx.listing.updateMany({
+                where: { id: reservation.listingId, stockQuantity: { gte: reservation.quantity } },
+                data: { stockQuantity: { decrement: reservation.quantity } }
+            })
+            if (decremented.count !== 1) {
+                throw new SettlementNeedsReview(`Listing ${reservation.listingId} has less stock than was reserved`)
+            }
+        }
+
+        await tx.order.updateMany({
+            where: { checkoutId: checkout.id, status: "PENDING_PAYMENT" },
+            data: { status: "PAID" }
+        })
+        return { result: "settled" as const }
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable })
+}

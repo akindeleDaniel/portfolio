@@ -1,11 +1,16 @@
 // All text on the site lives here. Edit this file, not the components.
 import { shortTimeSince, type YearMonth } from './experience.ts'
+// Code snippets live as plain text files so backticks in the code need no escaping.
+import splitPaymentCode from './snippets/split-payment.ts.txt?raw'
+import settlementCode from './snippets/settlement.ts.txt?raw'
+import strikeRuleCode from './snippets/strike-rule.ts.txt?raw'
+import strikeTestCode from './snippets/strike-test.ts.txt?raw'
 
 // The month you started coding. Your experience is worked out from this on every visit.
 const codingSince: YearMonth = { year: 2025, month: 9 }
 
 export const site = {
-  name: 'Daniel Ojo Akindele',
+  name: 'Daniel Akindele Ojo',
   shortName: 'Daniel',
   role: 'Full-stack developer',
   location: 'Niger State, Nigeria',
@@ -20,7 +25,8 @@ export const links = {
   whatsapp: `https://wa.me/2347046735408?text=${encodeURIComponent(whatsappMessage)}`,
   github: 'https://github.com/akindeleDaniel',
   linkedin: 'https://www.linkedin.com/in/danielojoakindele',
-  cv: '/cv.pdf',
+  // Set to '/cv.pdf' once the file is in public/; the button stays hidden while empty.
+  cv: '',
   storehatch: 'https://storehatch.app',
   // Paste your Calendly link here; the "Book a call" buttons stay hidden while it is empty.
   calendly: '',
@@ -49,7 +55,7 @@ export const hero = {
   caseStudyLabel: 'See StoreHatch',
   // Your photo. Until it is set, your initials show in its place.
   // Save a square photo as public/images/daniel.webp (about 800x800), then set:
-  // photo: { src: '/images/daniel.webp', alt: 'Daniel Ojo Akindele', width: 800, height: 800 },
+  // photo: { src: '/images/daniel.webp', alt: 'Daniel Akindele Ojo', width: 800, height: 800 },
   photo: null as Image | null,
   initials: 'DA',
   callLabel: 'Book a call',
@@ -209,13 +215,15 @@ export const storehatch = {
   sellUrl: 'https://storehatch.app/sell',
   sellLabel: 'Open a shop (for sellers)',
   privateNote:
-    // Mention the demo and snippets here once they are added.
-    'The code is private, so it is not linked here. This page shows what it does and how it fits together. I am happy to walk through the real code on a call.',
+    'The code is private, so it is not linked here. Below is a demo, how the system fits together, and a few cleaned-up snippets. I am happy to walk through the real code on a call.',
   callLabel: 'Book a call on WhatsApp',
   callText: 'Want to see how it really works? I am happy to walk through the code on a call.',
 
-  // Put the file in public/videos and set src, e.g. '/videos/storehatch-demo.mp4'.
-  video: null as null | { src: string; poster?: string; caption: string },
+  // Add a poster (a still shown before it plays) as public/videos/storehatch-demo-poster.webp and set poster.
+  video: {
+    src: '/videos/storehatch-demo.mp4',
+    caption: 'A quick tour: shops, one cart across shops, paying one shop at a time, the shopping list, seller and admin tools.',
+  } as null | { src: string; poster?: string; caption: string },
 
   overview: {
     title: 'What it is',
@@ -248,7 +256,7 @@ export const storehatch = {
       'Shop for every seller at shopname.storehatch.app',
       'One cart across many shops; checkout one shop at a time',
       'Paystack and Flutterwave split payments to sellers’ banks',
-      'Complaints are upheld or rejected; upheld complaints add strikes automatically: 2 strikes warn the seller, 4 block them',
+      'Complaints are upheld or rejected; upheld complaints add strikes automatically: 2 strikes warn the seller, 4 block them, and strikes stop counting after 90 days',
       'Seller tools to run their shop',
       'Admin tools to run the marketplace',
       'Shopping list: enter what you need and compare shops',
@@ -284,8 +292,35 @@ export const storehatch = {
   },
 
   snippetsTitle: 'A few snippets',
-  // Paste 2-3 cleaned-up snippets here. The section stays hidden while this is empty.
-  snippets: [] as Snippet[],
+  snippetsIntro:
+    'I use Claude Code, an AI coding assistant, to help keep my comments clear and consistent, so each part of the code explains why it works the way it does.',
+  // Trimmed from the real code; the files are in src/snippets.
+  snippets: [
+    {
+      title: 'Split payments: each seller paid straight to their bank',
+      note: 'Money is handled in kobo, whole numbers, so there are no rounding errors. The shares must add up to exactly what the buyer pays before any charge is made.',
+      language: 'ts',
+      code: splitPaymentCode,
+    },
+    {
+      title: 'Completing a paid order exactly once',
+      note: 'The webhook and the status check can arrive at the same time. A serializable transaction and a conditional update make sure only one of them completes the order, and payments that cannot be completed are flagged for review.',
+      language: 'ts',
+      code: settlementCode,
+    },
+    {
+      title: 'The strike rule: warn at 2, block at 4',
+      note: 'The update only matches a seller who is not blocked yet, so a seller is blocked and emailed exactly once, even if two complaints are upheld at the same moment.',
+      language: 'ts',
+      code: strikeRuleCode,
+    },
+    {
+      title: 'Testing the strike rule against a real database',
+      note: 'One of the 257 tests. It runs against real PostgreSQL and checks the edge cases: old strikes, rejected complaints, and the warning email being sent only once.',
+      language: 'ts',
+      code: strikeTestCode,
+    },
+  ] as Snippet[],
 }
 
 export const notFound = {

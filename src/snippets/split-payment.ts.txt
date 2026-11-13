@@ -1,0 +1,25 @@
+// Each seller's whole order goes to that seller; StoreHatch keeps nothing.
+const splits = checkout.orders.map((order) => ({
+    subaccountCode: order.seller.sellerProfile!.payoutAccounts[0]!.subaccountCode!,
+    amountKobo: toKobo(order.total),
+    retainedKobo: 0
+}))
+
+// Refuse to charge if the sellers' shares don't add up to exactly what the buyer pays.
+if (splits.reduce((sum, s) => sum + s.amountKobo + s.retainedKobo, 0) !== toKobo(checkout.total)) {
+    throw new Error(`Checkout ${checkout.id} total does not equal the sum of its orders`)
+}
+
+// Paystack: a flat split gives each seller their share; every party bears the fee
+// in proportion to its share.
+await paystackRequest("/transaction/initialize", {
+    method: "POST",
+    body: {
+        email, amount: amountKobo, currency: "NGN", reference, callback_url: callbackUrl,
+        split: {
+            type: "flat",
+            bearer_type: "all-proportional",
+            subaccounts: splits.map((s) => ({ subaccount: s.subaccountCode, share: s.amountKobo }))
+        }
+    }
+})

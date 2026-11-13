@@ -23,7 +23,7 @@ export default function HomePage() {
             {links.calendly && (
               <a href={links.calendly} className="button button-ghost" target="_blank" rel="noreferrer">{hero.callLabel}</a>
             )}
-            <a href={links.cv} className="button button-ghost" download>{hero.cvLabel}</a>
+            {links.cv && <a href={links.cv} className="button button-ghost" download>{hero.cvLabel}</a>}
             <Link to="/work/storehatch" className="button button-ghost">{hero.caseStudyLabel}</Link>
           </div>
         </div>
