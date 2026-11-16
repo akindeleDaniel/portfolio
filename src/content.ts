@@ -56,10 +56,7 @@ export const hero = {
   hireLabel: 'Hire me on WhatsApp',
   cvLabel: 'Download CV',
   caseStudyLabel: 'See StoreHatch',
-  // Your photo. Until it is set, your initials show in its place.
-  // Save a square photo as public/images/daniel.webp (about 800x800), then set:
-  // photo: { src: '/images/daniel.webp', alt: 'Daniel Akindele Ojo', width: 800, height: 800 },
-  photo: null as Image | null,
+  photo: { src: '/images/portfolio-image.jpg', alt: 'Daniel Akindele Ojo', width: 2189, height: 1685 } as Image,
   initials: 'DA',
   callLabel: 'Book a call',
   stats: [
