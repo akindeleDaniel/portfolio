@@ -137,6 +137,14 @@ a:focus-visible, .button:focus-visible { outline: 2px solid var(--accent); outli
 .eyebrow { color: var(--muted); font-size: 0.95rem; margin-bottom: 0.5rem; }
 .lead { font-size: 1.125rem; color: var(--muted); max-width: 38rem; }
 .note { color: var(--muted); max-width: 40rem; margin-top: 1.25rem; font-size: 0.95rem; }
+.problem-section {
+  max-width: 54rem; margin-block: 1.5rem; padding: clamp(1.5rem, 5vw, 3rem);
+  border: 1px solid var(--border); border-left: 4px solid var(--accent);
+  border-radius: var(--radius); background: var(--surface);
+}
+.problem-section .kicker { color: var(--accent); font-weight: 700; }
+.problem-section h2 { max-width: 42rem; margin-top: 0.5rem; }
+.problem-section > p:last-child { max-width: 44rem; color: var(--muted); font-size: 1.05rem; }
 
 /* Photo slot */
 .hero-sub { font-size: 1.2rem; font-weight: 600; color: var(--text); max-width: 38rem; margin-bottom: 0.75rem; }

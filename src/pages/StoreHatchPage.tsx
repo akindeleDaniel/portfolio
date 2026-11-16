@@ -29,7 +29,13 @@ export default function StoreHatchPage() {
         </figure>
       )}
 
-      <section className="section reveal prose">
+      <section className="section reveal problem-section">
+        <p className="kicker">{s.problem.label}</p>
+        <h2>{s.problem.title}</h2>
+        <p>{s.problem.text}</p>
+      </section>
+
+      <section className="section reveal prose problem-section">
         <h2>{s.overview.title}</h2>
         {s.overview.paragraphs.map((text) => <p key={text}>{text}</p>)}
       </section>
@@ -43,7 +49,7 @@ export default function StoreHatchPage() {
         ))}
       </section>
 
-      <section className="section reveal">
+      <section className="section reveal problem-section">
         <h2>{s.features.title}</h2>
         <ul className="list">
           {s.features.items.map((item) => <li key={item}>{item}</li>)}

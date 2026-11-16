@@ -233,6 +233,12 @@ export const storehatch = {
     ],
   },
 
+  problem: {
+    label: 'The problem I wanted to solve',
+    title: 'A business should not need a custom website just to get online.',
+    text: 'I noticed that many businesses had to pay a web developer to build a website before they could start selling online. For small businesses, that cost and complexity can make going digital feel out of reach. I built StoreHatch to give business owners a simpler way to create an online shop and bring their business to more customers.',
+  },
+
   screenshots: [
     {
       src: '/images/storehatch.webp',
