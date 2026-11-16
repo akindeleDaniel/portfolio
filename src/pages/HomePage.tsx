@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ProjectCard from '../components/ProjectCard.tsx'
 import {
@@ -6,9 +6,20 @@ import {
 } from '../content.ts'
 
 export default function HomePage() {
+  const [photoOpen, setPhotoOpen] = useState(false)
+
   useEffect(() => {
     document.title = `${site.name} · ${site.role}`
   }, [])
+
+  useEffect(() => {
+    if (!photoOpen) return
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setPhotoOpen(false)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [photoOpen])
 
   return (
     <>
@@ -30,10 +41,21 @@ export default function HomePage() {
         </div>
         <div className="portrait">
           {hero.photo
-            ? <img src={hero.photo.src} alt={hero.photo.alt} width={hero.photo.width} height={hero.photo.height} />
+            ? <button className="portrait-button" type="button" onClick={() => setPhotoOpen(true)} aria-label="View full portrait">
+                <img src={hero.photo.src} alt={hero.photo.alt} width={hero.photo.width} height={hero.photo.height} />
+              </button>
             : <span className="portrait-initials" aria-hidden="true">{hero.initials}</span>}
         </div>
       </section>
+
+      {photoOpen && hero.photo && (
+        <div className="photo-viewer" role="dialog" aria-modal="true" aria-label="Full portrait" onClick={(event) => {
+          if (event.target === event.currentTarget) setPhotoOpen(false)
+        }}>
+          <button className="photo-viewer-close" type="button" onClick={() => setPhotoOpen(false)} aria-label="Close full portrait">×</button>
+          <img src={hero.photo.src} alt={hero.photo.alt} />
+        </div>
+      )}
 
       <section className="container" aria-label="Highlights">
         <ul className="stats">
