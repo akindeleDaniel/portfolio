@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { header, links, nav, site } from '../content.ts'
+import { header, hero, links, nav, site } from '../content.ts'
 
 export default function Header() {
   // The phone menu remembers the page it was opened on, so moving to another page or section closes it
@@ -22,7 +22,10 @@ export default function Header() {
   return (
     <header className={open ? 'header header-open' : 'header'}>
       <div className="container header-inner">
-        <Link to="/" className="brand">{site.name}</Link>
+        <Link to="/" className="brand">
+          {hero.photo && <img className="brand-photo" src={hero.photo.src} alt="" />}
+          <span>{site.name}</span>
+        </Link>
         <nav aria-label="Main" id="main-nav">
           <ul className="nav">
             {nav.map((item) => (
